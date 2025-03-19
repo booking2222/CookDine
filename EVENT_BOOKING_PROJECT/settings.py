@@ -26,8 +26,12 @@ SECRET_KEY = 'django-insecure-pwvg2fvjf%=pf7*fj1@ld%9t0o*gkzy0ga_(i@qis8b_=t04#q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "cookanddine.onrender.com"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://cookanddine.onrender.com",
+    "https://cookanddine.onrender.com",
+]
 
 # Application definition
 
