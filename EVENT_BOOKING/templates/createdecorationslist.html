@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Decorations List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .edit-link {
+            color: blue;
+            text-decoration: none;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+
+    <h1>Decorations List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Time Duration (Hours)</th>
+                <th>Event</th>
+                <th>Amount</th>
+                <th>Image</th>
+                <th>Selected Utensils</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for decoration in decorations %}
+            <tr>
+                <td>{{ decoration.name }}</td>
+                <td>{{ decoration.timeduration }}</td>
+                <td>{{ decoration.event }}</td>
+                <td>{{ decoration.amount }}</td>
+                <td>
+                    {% if decoration.image %}
+                        <img src="{{ decoration.image.url }}" alt="Decoration Image">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>
+                    {% for utensil, count in decoration.selected_utensils.items %}
+                        <p>{{ utensil|capfirst }}: {{ count }}</p>
+                    {% empty %}
+                        No utensils selected
+                    {% endfor %}
+                </td>
+                <td>
+                    <a class="edit-link" href="{% url 'edit_decoration' decoration.id %}">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No decorations found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+
+</body>
+</html>

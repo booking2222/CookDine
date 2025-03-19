@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Decoration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+    <h1>Edit Decoration</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="{{ decoration.name }}" required>
+
+        <label for="description">Description:</label>
+        <textarea name="description">{{ decoration.description }}</textarea>
+
+        <label for="event">Event:</label>
+        <input type="text" name="event" value="{{ decoration.event }}" required>
+
+        <label for="timeduration">Duration (hours):</label>
+        <input type="number" name="timeduration" value="{{ decoration.timeduration }}" required>
+
+        <label for="amount">Amount (₹):</label>
+        <input type="number" name="amount" value="{{ decoration.amount }}" required>
+
+        <label for="image">Image:</label>
+        {% if decoration.image %}
+            <img src="{{ decoration.image.url }}" alt="Current Image" style="width:100px; height:auto;">
+        {% endif %}
+        <input type="file" name="image">
+
+        <label>Selected Utensils:</label>
+        {% for key, label in decoration.UTENSIL_CHOICES %}
+            <label>
+                <input type="checkbox" name="selected_utensils" value="{{ key }}"
+                    {% if key in decoration.selected_utensils %}checked{% endif %}>
+                {{ label }}
+            </label><br>
+        {% endfor %}
+
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="{% url 'declist' %}" class="btn btn-cancel">Cancel</a>
+    </form>
+</body>
+</html>

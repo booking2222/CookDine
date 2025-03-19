@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+    <h2>Complete Your Payment</h2>
+
+    <script>
+        var options = {
+            "key": "{{ RAZOR_KEY_ID }}",  // Razorpay Key ID
+            "amount": "{{ amount_in_paise }}",  // Amount in paise (calculated in the view)
+            "currency": "INR",
+            "order_id": "{{ payment.payment_id }}",  // Razorpay order ID
+            "name": "Refund Payment",
+            "description": "Payment for refund approval",
+            "image": "/static/logo.png",  // Optional: Add a logo
+            "handler": function (response) {
+                // On successful payment
+                var payment_id = response.razorpay_payment_id;
+                var order_id = response.razorpay_order_id;
+
+                // Redirect to the backend to confirm the payment
+                window.location.href = "/payment/success/" + order_id + "/" + payment_id + "/";
+            },
+            "prefill": {
+                "name": "{{ payment.user.username }}",  // User's name
+                "email": "{{ payment.user.email }}",    // User's email
+                "contact": "{{ payment.user.phone }}"   // User's phone
+            },
+            "theme": {
+                "color": "#F37254"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    </script>
+
+</body>
+</html>

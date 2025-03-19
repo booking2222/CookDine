@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details Form</title>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            bottom: 10px;
+            left: 200px;
+            right:10px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], input[type="date"], input[type="time"], button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+            border-color: #c314f8;
+            box-shadow: 0 0 5px hsla(187, 25%, 94%, 0.977);
+        }
+
+        button {
+            background-color: #dd00ff;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #e010dc;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #777;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input {
+            margin-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Event Details Form</h1>
+        <form method="post" id="userForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="Event_name">Event Name:</label>
+                <input type="text" id="Event_name" name="Event_name" required minlength="3" placeholder="Enter the name of your Event" pattern="[A-Za-z ]+" />
+            </div>
+
+            <div class="form-group">
+                <label for="Date">Date:</label>
+                <input type="date" id="Date" name="Date" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Time">Time:</label>
+                <input type="time" id="Time" name="Time" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Location">Location:</label>
+                <input type="text" id="Location" name="Location" required placeholder="Enter your location" />
+            </div>
+
+            <div class="form-group">
+                <label for="No_of_members">Number of Members:</label>
+                <input type="text" id="No_of_members" name="No_of_members" required placeholder="No. of attendees" />
+            </div>
+
+            <div class="form-group">
+                <label for="Duration">Duration:</label>
+                <input type="text" id="Duration" name="Duration" required placeholder="Enter the duration" />
+            </div>
+
+            <div class="form-group">
+                <label for="Event_organizer">Event Organizer:</label>
+                <input type="text" id="Event_organizer" name="Event_organizer" required placeholder="Enter the name of the organizer" />
+            </div>
+
+            <div class="form-group">
+                <label for="Additional_requirements">Additional Requirements:</label>
+                <input type="text" id="Additional_requirements" name="Additional_requirements" placeholder="Enter additional requirements" required />
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+        
+
+    </div>
+
+    <div class="footer">
+        &copy; 2024 Event Booking Platform. All rights reserved.
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+</body>
+</html>

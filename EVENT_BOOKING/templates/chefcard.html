@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Packages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #FDE2D5; /* Matching background color from the image */
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body class="p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">Chef Packages</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for event in chefs %}
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                {% if event.chefimage %}
+                <img src="{{ event.chefimage.url }}" alt="Chef Image" class="w-full h-48 object-cover">
+                {% else %}
+                <img src="/static/default_chef.jpg" alt="No image" class="w-full h-48 object-cover">
+                {% endif %}
+                            <div class="p-4">
+                    <h2 class="text-xl font-semibold text-center mb-6">{{ event.packagename }}</h2>
+                    <h4 class="text-gray-700 mt-2">{{ event.category }}</h4>
+                    <p class="text-gray-700 mt-2">{{ event.details }}</p>
+                    <p class="text-gray-700 mt-2">{{ event.chefname }}</p>
+                    <p class="text-gray-500 mt-1">Date: {{ event.fromdate }}</p>
+                    <p class="text-gray-500 mt-1">Date: {{ event.todate }}</p>
+                    <p class="text-gray-500">Price: ${{ event.rentperday }}</p>
+                </div>
+                
+                <button>
+                    <a href="/add_cart/{{ event.id }}"class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                        Book Now</a>
+                </button>
+                
+                
+                
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+</body>
+</html>

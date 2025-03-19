@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        
+        .buy-now-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .buy-now-btn:hover {
+            background-color: #218838;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utensils List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4">Your Utensil Cart</h2>
+        
+        {% if cart_items %}
+        <table class="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Name</th>
+                    <th class="px-4 py-2">Phone</th>
+                    <th class="px-4 py-2">Address</th>
+                    <th class="px-4 py-2">Date</th>
+                    <th class="px-4 py-2">Return Date</th>
+                    <th class="px-4 py-2">Time</th>
+                    <th class="px-4 py-2">Amount</th>
+                    <th class="px-4 py-2">Selected Utensils</th>
+                    <th class="px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr class="border-b">
+                    <td class="px-4 py-2">{{ item.name }}</td>
+                    <td class="px-4 py-2">{{ item.phone }}</td>
+                    <td class="px-4 py-2">{{ item.address }}</td>
+                    <td class="px-4 py-2">{{ item.date }}</td>
+                    <td class="px-4 py-2">{{ item.rdate }}</td>
+                    <td class="px-4 py-2">{{ item.time }}</td>
+                    <td class="px-4 py-2">{{ item.amount }}</td>
+                    <td class="px-4 py-2">
+                        <ul>
+                            {% for key, value in item.selected_utensils.items %}
+                                <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td class="px-4 py-2">
+                        <button type="button" class="buy-now-btn pay-button"
+                            data-utensil-id="{{ item.id }}" data-amount="{{ item.amount }}">
+                            Buy Now
+                        </button>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-red-500">No utensils found in your list.</p>
+        {% endif %}
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".pay-button").forEach(button => {
+            button.addEventListener("click", function() {
+                let utensilId = this.getAttribute("data-utensil-id");
+                let amount = this.getAttribute("data-amount");
+
+                fetch("{% url 'create_order' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `amount=${amount}&utensil_id=${utensilId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let options = {
+                        "key": "{{ RAZOR_KEY_ID }}",
+                        "amount": data.amount,
+                        "currency": "INR",
+                        "order_id": data.id,
+                        "handler": function(response) {
+                            savePayment(response.razorpay_payment_id, amount, utensilId);
+                        }
+                    };
+                    let rzp1 = new Razorpay(options);
+                    rzp1.open();
+                });
+            });
+        });
+    });
+
+    function savePayment(payment_id, amount, utensilId) {
+        fetch("{% url 'save_payment' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "payment_id": payment_id,
+                "amount": amount,
+                "utensil_id": utensilId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert("Payment successful!");
+                location.reload();
+            } else {
+                alert("Payment failed. Please try again.");
+            }
+        });
+    }
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoration Details</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body class="bg-pink-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <img src="{{ decoration.image.url }}" alt="{{ decoration.name }}" class="w-full h-96 object-cover">
+        <div class="p-8">
+            <h1 class="text-3xl font-bold text-gray-800">{{ decoration.name }}</h1>
+            <p class="mt-4 text-gray-600"><strong>Event:</strong> {{ decoration.event }}</p>
+            <p class="mt-2 text-gray-600"><strong>Time Duration:</strong> {{ decoration.timeduration }} Hours</p>
+            <p class="mt-2 text-gray-600"><strong>Amount:</strong> ₹{{ decoration.amount }}</p>
+            
+            <div class="mt-4">
+                <h2 class="text-xl font-semibold text-gray-800">Selected Utensils:</h2>
+                <ul class="list-disc ml-5 mt-2 text-gray-600">
+                    {% for key, value in decoration.selected_utensils.items %}
+                    <li>{{ key|title }}: {{ value }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <button class="back-button" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Go Back
+              </button>
+
+            <form method="post" action="{% url 'book_decoration' decoration.id %}" class="mt-8 bg-gray-50 p-4 rounded-lg shadow">
+                {% csrf_token %}
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Book This Decoration</h2>
+                
+                <label class="block text-gray-700">Name:</label>
+                <input type="name" name="name" class="w-full p-2 rounded-lg border mb-4" required>
+
+                <label class="block text-gray-700">Phone:</label>
+                <input type="phone" name="phone" class="w-full p-2 rounded-lg border mb-4" required>
+
+                <label class="block text-gray-700">Address:</label>
+                <input type="address" name="address" class="w-full p-2 rounded-lg border mb-4" required>
+
+                <label class="block text-gray-700">Email:</label>
+                <input type="email" name="email" class="w-full p-2 rounded-lg border mb-4" required>
+
+                <label class="block text-gray-700">Rental Date:</label>
+                <input type="date" name="date" class="w-full p-2 rounded-lg border mb-4" required>
+                
+                <label class="block text-gray-700">Return Date:</label>
+                <input type="date" name="rdate" class="w-full p-2 rounded-lg border mb-4" required>
+                
+                <label class="block text-gray-700">Time:</label>
+                <input type="time" name="time" class="w-full p-2 rounded-lg border mb-4" required>
+                
+                <label class="block text-gray-700">Add Extra Utensils:</label>
+                <select id="Utensil_type" class="w-full p-2 rounded-lg border mb-4" multiple>
+                    <option value="chair">Chair</option>
+                    <option value="table">Table</option>
+                    <option value="light">Light</option>
+                    <option value="generator">Generator</option>
+                </select>
+                <button type="button" onclick="addUtensil()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Utensil</button>
+
+                <div id="selected-utensils" class="mt-4"></div>
+
+                <button type="submit" class="mt-6 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Confirm Booking</button>
+            </form>
+            <a href="{% url 'home' %}" class="mt-6 inline-block text-indigo-600 hover:text-indigo-800 font-semibold">Back to List</a>
+        </div>
+    </div>
+
+    <script>
+        function addUtensil() {
+            const select = document.getElementById("Utensil_type");
+            const selectedUtensilsDiv = document.getElementById("selected-utensils");
+
+            Array.from(select.selectedOptions).forEach(option => {
+                if (!document.getElementById(`utensil-${option.value}`)) {
+                    const div = document.createElement("div");
+                    div.id = `utensil-${option.value}`;
+                    div.className = "selected-utensil-item mb-2";
+                    div.innerHTML = `
+                        <label>${option.value} Quantity:</label>
+                        <input type="number" name="Quantity_${option.value}" 
+                               class="w-full p-2 rounded-lg border mb-2" min="1" required 
+                               placeholder="Enter quantity">
+                        <button type="button" class="text-red-500" 
+                                onclick="removeUtensil('${option.value}')">Remove</button>
+                    `;
+                    selectedUtensilsDiv.appendChild(div);
+                }
+            });
+        }
+        
+        function removeUtensil(utensil) {
+            const div = document.getElementById(`utensil-${utensil}`);
+            if (div) {
+                div.remove();
+            }
+        }
+    </script>
+</body>
+</html>

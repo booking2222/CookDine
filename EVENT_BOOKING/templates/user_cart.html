@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .back-button {
+        position: fixed; /* Keeps it in the top-left corner */
+        top: 90px;
+        left: 10px;
+        right:120px;
+        padding: 10px 20px;
+        width:auto;
+        max-width:150px;
+        text-transform: uppercase;
+        background-color: rgb(138, 72, 182); /* Button color */
+        color: white;
+        border-radius: 25px;
+        font-size: 18px; /* Small button text */
+        font-weight: bold;
+        font-size: 1rem;
+        align-items: center;
+      }
+      
+      .back-button:hover {
+        background-color: rgb(206, 148, 243); /* Darker shade on hover */
+      }
+      
+      .back-button i {
+        font-size: 16px; /* Icon size */
+      }
+    </style>
+</head>
+<body class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Your Cart</h2>
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i> Go Back
+          </button>
+
+        <!-- Chef Bookings -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h4>Chef Bookings</h4>
+            </div>
+            <div class="card-body">
+                {% if chef_cart_items %}
+                    <ul class="list-group">
+                        {% for item in chef_cart_items %}
+                            <li class="list-group-item">
+                                <strong>Package:</strong> {{ item.products.packagename }}<br>
+                                <strong>Start:</strong> {{ item.start }} | <strong>End:</strong> {{ item.end }}<br>
+                                <strong>Location:</strong> {{ item.location }}<br>
+                                <strong>Total Price:</strong> ${{ item.total_price }}<br>
+                                <strong>Status:</strong> {{ item.status }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No chef bookings found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Decoration Bookings -->
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <h4>Decoration Bookings</h4>
+            </div>
+            <div class="card-body">
+                {% if decoration_cart_items %}
+                    <ul class="list-group">
+                        {% for item in decoration_cart_items %}
+                            <li class="list-group-item">
+                                <strong>Decoration:</strong> {{ item.decoration.name }}<br>
+                                <strong>Date:</strong> {{ item.date }} | <strong>Return Date:</strong> {{ item.rdate }}<br>
+                                <strong>Time:</strong> {{ item.time }}<br>
+                                <strong>Total Amount:</strong> ${{ item.amount }}<br>
+                                <strong>Status:</strong> {{ item.status }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No decoration bookings found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Utensils Bookings -->
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-white">
+                <h4>Utensil Bookings</h4>
+            </div>
+            <div class="card-body">
+                {% if utensil_cart_items %}
+                    <ul class="list-group">
+                        {% for item in utensil_cart_items %}
+                            <li class="list-group-item">
+                                <strong>Name:</strong> {{ item.name }}<br>
+                                <strong>Phone:</strong> {{ item.phone }}<br>
+                                <strong>Address:</strong> {{ item.address }}<br>
+                                <strong>Date:</strong> {{ item.date }} | <strong>Return Date:</strong> {{ item.rdate }}<br>
+                                <strong>Time:</strong> {{ item.time }}<br>
+                                <strong>Total Amount:</strong> ${{ item.amount }}<br>
+                                <strong>Status:</strong> {{ item.status }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No utensil bookings found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'home' %}" class="btn btn-secondary w-100 mt-3">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,412 @@
+{% comment %} <!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Profile Update</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa; /* Light background for a modern look */
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background-color: #ffffff; /* White card for content */
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            text-align: center; /* Center align form content */
+        }
+
+        .form-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #4caf50; /* Accent color */
+        }
+
+        .form-container img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%; /* Circular profile picture */
+            border: 3px solid #4caf50; /* Green border for emphasis */
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="tel"],
+        .form-container input[type="password"],
+        .form-container input[type="file"],
+        .form-container textarea,
+        .form-container input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9; /* Light gray input background */
+            font-size: 14px;
+        }
+
+        .form-container input:focus,
+        .form-container textarea:focus {
+            outline: none;
+            border-color: #4caf50; /* Green highlight on focus */
+            background-color: #ffffff;
+        }
+
+        .form-container textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-container button {
+            width: 100%;
+            background-color: #4caf50;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049; /* Slightly darker green on hover */
+        }
+
+        .form-container .note {
+            font-size: 12px;
+            color: #777;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Chef Profile Update</h1>
+
+        {% if image.url %}
+            <img src="{{ image.url }}" alt="User Image">
+        {% else %}
+            <img src="https://via.placeholder.com/120" alt="Default User Image">
+        {% endif %}
+
+        <form method="post" id="chefForm" action="/chef_update/">
+            {% csrf_token %}
+
+            <label for="image">Upload Profile Picture:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+
+            <label for="username">Full Name:</label>
+            <input type="text" id="username" name="username" value="{{username}}" required minlength="3" maxlength="50" placeholder="Enter your full name">
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" value="{{phone}}" required pattern="^\d{10}$" placeholder="Enter your 10-digit phone number">
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" value="{{email}}" required placeholder="Enter your email address">
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" placeholder="Enter your full address" required>{{address}}</textarea>
+
+            <label for="password">Create a Password:</label>
+            <input type="password" id="password" name="password" value="{{password}}" required minlength="6" placeholder="Create a strong password">
+
+            <label for="place">City / Location:</label>
+            <input type="text" id="place" name="place" value="{{place}}" required placeholder="Enter your city or location">
+
+            <label for="languages_spoken">Languages Spoken:</label>
+            <input type="text" id="languages_spoken" name="languages_spoken" value="{{languages_spoken}}" required placeholder="E.g., English, Spanish, French">
+
+            <label for="experience">Work Experience (in years):</label>
+            <input type="number" id="experience" name="experience" value="{{experience}}" required min="0" placeholder="Enter years of experience">
+
+            <label for="signature_dishes">Signature Dishes:</label>
+            <textarea id="signature_dishes" name="signature_dishes" placeholder="List your signature dishes (comma-separated)" required>{{signature_dishes}}</textarea>
+
+            <label for="service_area">Service Area:</label>
+            <textarea id="service_area" name="service_area" placeholder="Specify the places you can cover" required>{{service_area}}</textarea>
+
+            <label for="primary_cuisines">Primary Cuisines:</label>
+            <textarea id="primary_cuisines" name="primary_cuisines" placeholder="E.g., Italian, Chinese, Vegan" required>{{primary_cuisines}}</textarea>
+
+            <label for="services_offered">Services Offered:</label>
+            <textarea id="services_offered" name="services_offered" placeholder="E.g., Private dining, Catering, Cooking classes" required>{{services_offered}}</textarea>
+
+            <label for="certifications">Upload Certifications (if any):</label>
+            <input type="file" id="certifications" name="certifications" accept=".pdf,.jpg,.png,.docx">
+
+            <label for="work_hours_and_days">Work Hours and Days:</label>
+            <textarea id="work_hours_and_days" name="work_hours_and_days" placeholder="E.g., Mon-Fri: 9 AM - 5 PM" required>{{work_hours_and_days}}</textarea>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:rgba(174, 77, 183, 0.89); /* Light gray background */
+            color: #333; /* Dark text for contrast */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: #ffffff; /* White background for the form */
+            border: 1px solid #e0e0e0; /* Subtle border */
+            border-radius: 40px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 2px;
+            font-size: 24px;
+            color: #333; /* Dark heading */
+        }
+
+        .form-container img {
+            display: block;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            border: 3px solid #e0e0e0;
+            object-fit: cover;
+        }
+
+        .form-container label {
+            display: block;
+            padding:20px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #555; /* Muted label color */
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="tel"],
+        .form-container input[type="password"] {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            background: #f9f9f9; /* Light gray input background */
+            color: #333;
+            font-size: 14px;
+            box-sizing: 200px;
+        }
+
+        .form-container input:focus {
+            outline: none;
+            width:auto;
+            border-color:rgb(203, 100, 234); /* Green border on focus */
+            background: #ffffff;
+        }
+
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background:rgba(208, 59, 128, 0.91); /* Green button */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background: #45a049; /* Slightly darker green on hover */
+        }
+
+        .form-container p {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666; /* Muted text color */
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-container h1 {
+                font-size: 20px;
+            }
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    
+    <div class="form-container">
+        <br><br>
+        <h1>Chef Profile</h1>
+        {% if image.url %}
+        <img src="{{ image.url }}" alt="User Image">
+        {% else %}
+        <centre><img src="https://via.placeholder.com/120" alt="Image"></centre>
+        {% endif %}
+    
+
+        <div class="profile-fields">
+            <div class="field">
+                <strong>Full Name:</strong>
+                <span>{{ username }}</span>
+            </div>
+            <div class="field">
+                <strong>Phone Number:</strong>
+                <span>{{ phone }}</span>
+            </div>
+            <div class="field">
+                <strong>Email Address:</strong>
+                <span>{{ email }}</span>
+            </div>
+            <div class="field">
+                <strong>Address:</strong>
+                <span>{{ address }}</span>
+            </div>
+            <div class="field">
+                <strong>Password:</strong>
+                <span>{{ password }}</span>
+            </div>
+            <div class="field">
+                <strong>City / Location:</strong>
+                <span>{{ place }}</span>
+            </div>
+            <div class="field">
+                <strong>Languages Spoken:</strong>
+                <span>{{ languages_spoken }}</span>
+            </div>
+            <div class="field">
+                <strong>Work Experience:</strong>
+                <span>{{ experience }} years</span>
+            </div>
+            <div class="field">
+                <strong>Signature Dishes:</strong>
+                <span>{{ signature_dishes }}</span>
+            </div>
+            <div class="field">
+                <strong>Service Area:</strong>
+                <span>{{ service_area }}</span>
+            </div>
+            <div class="field">
+                <strong>Primary Cuisines:</strong>
+                <span>{{ primary_cuisines }}</span>
+            </div>
+            <div class="field">
+                <strong>Services Offered:</strong>
+                <span>{{ services_offered }}</span>
+            </div>
+            <div class="field">
+                <strong>Certifications:</strong>
+                <span>{{ certifications }}</span>
+            </div>
+            <div class="field">
+                <strong>Work Hours:</strong>
+                <span>{{ work_hours_and_days }}</span>
+            </div>
+            <div class="field">
+                <strong>Availability:</strong>
+                <select name="availability" class="border rounded px-2 py-1">
+                    <option value="available">Available</option>
+                    <option value="not_available">Not Available</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="edit-button" onclick="location.href='/chef_update/'">Update Profile</button>
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+</body>
+</html>

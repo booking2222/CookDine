@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form</title>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+        body {
+            font-family: harington;
+            background-color: #4cd1ca;
+            margin: 0;
+            padding: 20px;
+        }
+
+        form {
+            background-color: rgb(10, 234, 212);
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="url"]:focus,
+        input[type="password"]:focus {
+            border-color: #3c88da;
+            outline: none;
+        }
+
+        button {
+            background-color: #7567cd;
+            color: rgb(37, 202, 128);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            padding: 50px;
+        }
+
+        @media (max-width: 480px) {
+            form {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+    <form method="post" id="userForm">
+        {% csrf_token %}
+        <label for="Event_name">Event name:</label>
+        <input type="text" id="Event_name" name="Event_name" required minlength="3" placeholder="Enter the name of your Event"  pattern="[A-Z a-z]+"  />
+
+        <label for="Date">Date:</label>
+        <input type="date" id="Date" name="Date" required pattern="DD/YY/YYYY" placeholder="DD/YY/YYYY"  />
+
+        <label for="Time">Time:</label>
+        <input type="time" id="Time" name="Time" placeholder="%H:%M" required />
+
+        <label for="Location">Location:</label>
+        <input type="text" id="Location" name="Location" placeholder="Enter your Location here" required />
+
+        <label for="No_of_members">No of members:</label>
+        <input type="text" id="No_of_members" name="No_of_members" placeholder="No. of attendees" required   />
+
+        <label for="Duration">Duration:</label>
+        <input type="text" id="Duration" name="Duration" placeholder="Enter the duration you may take" required />
+
+        <label for="Event_organizer">Event organizer:</label>
+        <input type="text" id="Event_organizer" name="Event_organizer" placeholder="Enter the name of the organizer you want" required />
+
+        <label for="Additional_requirements">Additional requirements:</label>
+        <input type="text" id="Additional_requirements" name="Additional_requirements" placeholder="Enter your requirements" required />
+
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            // Prevent form submission if validation fails
+            if (!this.checkValidity()) {
+                event.preventDefault(); // Prevent form submission
+                alert("Please fill out all required fields correctly.");
+            }
+        });
+
+        
+    </script>
+
+</body>
+</html>

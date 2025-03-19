@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">Payment Checkout</h1>
+            <p class="text-gray-600 mt-2">Complete your purchase securely with Razorpay</p>
+        </div>
+        
+        <div class="mb-6 p-4 bg-indigo-50 rounded-lg">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-700">Amount:</span>
+                <span class="text-xl font-semibold text-indigo-700">₹{{ checkout_data.amount|divisibleby:100 }}</span>
+            </div>
+        </div>
+        
+        <button 
+            id="rzp-button"
+            class="w-full bg-indigo-600 hover:bg-indigo-800 text-white py-3 px-6 rounded-lg text-lg font-semibold transition duration-300"
+        >
+            Pay Now
+        </button>
+        
+        <div class="mt-6 text-center">
+            <a href="#" class="text-indigo-600 hover:text-indigo-800">
+                Return to Cart
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var options = {
+                key: "{{ checkout_data.key }}",
+                amount: "{{ checkout_data.amount }}",
+                currency: "{{ checkout_data.currency }}",
+                name: "{{ checkout_data.name }}",
+                description: "{{ checkout_data.description }}",
+                order_id: "{{ checkout_data.order_id }}",
+                handler: function(response) {
+                    // Create a form to submit the payment data
+                    var form = document.createElement('form');
+                    form.setAttribute('method', 'POST');
+                    form.setAttribute('action', "{{ checkout_data.callback_url }}");
+                    
+                    var hiddenField1 = document.createElement('input');
+                    hiddenField1.setAttribute('type', 'hidden');
+                    hiddenField1.setAttribute('name', 'razorpay_payment_id');
+                    hiddenField1.setAttribute('value', response.razorpay_payment_id);
+                    form.appendChild(hiddenField1);
+                    
+                    var hiddenField2 = document.createElement('input');
+                    hiddenField2.setAttribute('type', 'hidden');
+                    hiddenField2.setAttribute('name', 'razorpay_order_id');
+                    hiddenField2.setAttribute('value', response.razorpay_order_id);
+                    form.appendChild(hiddenField2);
+                    
+                    var hiddenField3 = document.createElement('input');
+                    hiddenField3.setAttribute('type', 'hidden');
+                    hiddenField3.setAttribute('name', 'razorpay_signature');
+                    hiddenField3.setAttribute('value', response.razorpay_signature);
+                    form.appendChild(hiddenField3);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                prefill: {
+                    name: "{{ checkout_data.prefill.name }}",
+                    email: "{{ checkout_data.prefill.email }}",
+                    contact: "{{ checkout_data.prefill.contact }}"
+                },
+                notes: {
+                    {% for key, value in checkout_data.notes.items %}
+                    "{{ key }}": "{{ value }}",
+                    {% endfor %}
+                },
+                theme: {
+                    color: "{{ checkout_data.theme.color }}"
+                }
+            };
+            
+            var rzp = new Razorpay(options);
+            
+            document.getElementById('rzp-button').onclick = function(e) {
+                rzp.open();
+                e.preventDefault();
+            }
+            
+            // Auto-open the payment modal
+            setTimeout(function() {
+                document.getElementById('rzp-button').click();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

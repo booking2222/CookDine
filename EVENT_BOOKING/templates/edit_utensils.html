@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Utensils Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Edit Utensils Details</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name">Name</label>
+            <input type="text" class="form-control" name="name" value="{{ utensil.name }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone">Phone</label>
+            <input type="text" class="form-control" name="phone" value="{{ utensil.phone }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_address">Address</label>
+            <input type="text" class="form-control" name="address" value="{{ utensil.address }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_date">Event Date</label>
+            <input type="date" class="form-control" name="date" value="{{ utensil.date }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_rdate">Return Date</label>
+            <input type="date" class="form-control" name="rdate" value="{{ utensil.rdate }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_time">Time</label>
+            <input type="time" class="form-control" name="time" value="{{ utensil.time }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_amount">Amount</label>
+            <input type="number" class="form-control" name="amount" value="{{ utensil.amount }}">
+        </div>
+
+        <div class="form-group">
+            <label for="id_selected_utensils">Selected Utensils</label>
+            <select multiple class="form-control" name="selected_utensils">
+                {% for utensil_type, utensil_name in utensil.selected_utensils.items %}
+                    <option value="{{ utensil_type }}" selected>{{ utensil_name }}</option>
+                {% empty %}
+                    <option value="cutlery_sets">Cutlery Sets</option>
+                    <option value="plates_bowls">Plates and Bowls</option>
+                    <option value="serving_utensils">Serving Utensils</option>
+                    <option value="specialty_tools">Specialty Tools</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+
+<footer class="text-center mt-5">
+    <p>&copy; 2025 Utensils Tracker</p>
+</footer>
+<button class="back-button" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </button>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

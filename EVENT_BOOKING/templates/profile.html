@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:rgba(174, 77, 183, 0.89); /* Light gray background */
+            color: #333; /* Dark text for contrast */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: #ffffff; /* White background for the form */
+            border: 1px solid #e0e0e0; /* Subtle border */
+            border-radius: 40px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 2px;
+            font-size: 24px;
+            color: #333; /* Dark heading */
+        }
+
+        .form-container img {
+            display: block;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            border: 3px solid #e0e0e0;
+            object-fit: cover;
+        }
+
+        .form-container label {
+            display: block;
+            padding:20px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #555; /* Muted label color */
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="tel"],
+        .form-container input[type="password"] {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            background: #f9f9f9; /* Light gray input background */
+            color: #333;
+            font-size: 14px;
+            box-sizing: 200px;
+        }
+
+        .form-container input:focus {
+            outline: none;
+            width:auto;
+            border-color:rgb(203, 100, 234); /* Green border on focus */
+            background: #ffffff;
+        }
+
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background:rgba(208, 59, 128, 0.91); /* Green button */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background:rgb(194, 93, 237); /* Slightly darker green on hover */
+        }
+
+        .form-container p {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666; /* Muted text color */
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-container h1 {
+                font-size: 20px;
+            }
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+    <div class="form-container">
+        <h1>User Profile</h1>
+        {% if image.url %}
+            <img src="{{ image.url }}" alt="User Image">
+        {% else %}
+            <img src="https://via.placeholder.com/120" alt="Default User Image">
+        {% endif %}
+
+        <form method="post" id="userForm" action="/update_profile/">
+            {% csrf_token %}
+            <div class="form-container">
+                <strong>Full Name:</strong>
+                <span>{{ username }}</span>
+            </div>
+            <br>
+
+            <div class="form-container">
+                <strong>Phone:</strong>
+                <span>{{ phone }}</span>
+            </div>
+            <br>
+
+            <div class="form-container">
+                <strong>Email:</strong>
+                <span>{{ email }}</span>
+            </div>
+            <br>
+
+            <div class="form-container">
+                <strong>Address:</strong>
+                <span>{{ address }}</span>
+            </div>
+            <br>
+
+            <div class="form-container">
+                <strong>Password:</strong>
+                <span>password</span>
+            </div>
+            <br>
+
+            <div class="form-container">
+                <strong>Place:</strong>
+                <span>{{ place }}</span>
+            </div>
+            <br>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            if (!this.checkValidity()) {
+                event.preventDefault();
+                alert("Please fill out all required fields correctly.");
+            }
+        });
+
+        const passwordInput = document.getElementById('password');
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            if (password.length < 6) {
+                this.setCustomValidity('Password must be at least 6 characters long.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    </script>
+</body>
+</html>

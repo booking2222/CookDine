@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Cart</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Your Chef Cart Items</h1>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-2xl overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Image</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Package Name</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Event Date</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">End Date</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Location</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Total Price</th>
+                        <th class="py-2 px-4 bg-gray-200 text-left">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% comment %} for decoration cart {% endcomment %}
+                    {% for item in cart_items %}
+                    <tr class="border-b">
+                        <td class="py-2 px-4">
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-24 h-24 object-cover rounded-md">
+                        </td>
+                        <td class="py-2 px-4">{{ item.products.packagename }}</td>
+                        <td class="py-2 px-4">{{ item.start }}</td>
+                        <td class="py-2 px-4">{{ item.end }}</td>
+                        <td class="py-2 px-4">{{ item.location }}</td>
+                        <td class="py-2 px-4">₹{{ item.total_price }}</td>
+                        <td class="py-2 px-4">
+                            <a href="/initiate_bulk_payment/" class="bg-indigo-600 hover:bg-indigo-800 text-white py-2 px-4 rounded-md">
+                                Buy
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% comment %} for utensil cart {% endcomment %}
+
+                    {% comment %} {% for item in Event %}
+                    <tr class="border-b">
+                        <td class="py-2 px-4">
+                            <img src="{{ item.utensilsform.image.url }}" alt="{{ item.utensilsform.name }}" class="w-24 h-24 object-cover rounded-md">
+                        </td>
+                        <td class="py-2 px-4">{{ item.utensilsform.name }}</td>
+                        <td class="py-2 px-4">₹{{ item.amount }}</td>
+                        <td class="py-2 px-4">
+                            <a href="{% url 'buy_decoration' item.utensilsform.id %}" class="bg-indigo-600 hover:bg-indigo-800 text-white py-2 px-4 rounded-md">
+                                Buy
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %} {% endcomment %}
+                </tbody>
+            </table>
+            
+            <!-- Total and Buy All Section -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">Total Amount:</span>
+                    <span class="text-xl font-bold text-indigo-700">₹{{ total_amount }}</span>
+                </div>
+                <button 
+                id="buy-all" 
+                class="w-full bg-indigo-600 hover:bg-indigo-800 text-white py-3 px-6 rounded-lg text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                {% if total_items == 0 %}disabled{% endif %}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Buy All Items
+            </button>
+            </div>
+        </div>
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+    <!-- Razorpay Script -->
+    {% comment %} <script src="https://checkout.razorpay.com/v1/checkout.js"></script> {% endcomment %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener to the Buy All button
+            const buyAllButton = document.getElementById('buy-all');
+            if (buyAllButton) {
+                buyAllButton.addEventListener('click', function() {
+                    window.location.href = "{% url 'initiate_bulk_payment' %}";
+                });
+            }
+        });
+        </script>
+
+</body>
+</html>

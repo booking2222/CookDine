@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <title>table</title>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color:#e8f4fc, hsl(212, 89.20%, 63.70%);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: hsl(192, 71.40%, 98.60%);
+            margin: 0 auto;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid hsl(180, 4.80%, 4.10%);
+            text-align: left;
+        }
+        th {
+            background-color:rgb(238, 244, 246);
+            color:  hsl(180, 4.8%, 4.1%);
+        }
+        tr:nth-child(even) {
+            background-color:hsl(192, 71.40%, 98.60%);
+        }
+        tr:hover {
+            background-color: hsl(192, 71.40%, 98.60%)#ddd;
+        }
+        table caption {
+            font-size: 1.5em;
+            margin: 10px;
+        }
+        .hide-password td {
+            color: #ccc;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+    </head>
+    <body>
+        <button class="back-button" onclick="window.history.back()">Go Back</button>
+<link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file --><button class="back-button" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </button>
+
+        <table class="table table-stripped table-hover">
+            <br>
+            <br>
+            <tr>
+                <th>Profile Image</th>
+                <th>Name</th>
+                <th>phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                {% comment %} <th>password</th> {% endcomment %}
+                <th>place</th>
+                <th>Languages Spoken</th>
+                <th>Work Experience</th>
+                <th>Signature Dishes</th>
+                <th>Service Area</th>
+                <th>Primary Cuisines</th>
+                <th>Services Offered</th>
+                <th>Certifications</th>
+                <th>Work Hours and Days</th>
+                <th>Delete User</th>
+                <th>Permission</th>
+            </tr>
+            {% for user in chef %}
+            <tr>
+                <td>{{user.image}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.phone}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.address}}</td>
+                {% comment %} <td>{{user.password}}</td> {% endcomment %}
+                <td>{{user.place}}</td>
+                <td>{{user.languages_spoken}}</td>
+                <td>{{user.experience}}</td>
+                <td>{{user.signature_dishes}}</td>
+                <td>{{user.service_area}}</td>
+                <td>{{user.primary_cuisines}}</td>
+                <td>{{user.services_offered}}</td>
+                <td>{{user.certifications}}</td>
+                <td>{{user.work_hours_and_days}}</td>
+                <td><a href="/deletechefuser/{{user.id}}">Delete</a></td>
+                <td>
+                    <form method="post" action="/chef_status/">
+                        {% csrf_token %}
+                        <input type="hidden" name="email" value="{{user.email}}">
+                        <select name="status">
+                            <option value="applied"{% if user.status == 'applied' %}selected{% endif %}>Applied</option>
+                            <option value="approved"{% if user.status == 'approved' %}selected{% endif %}>Approved</option>
+                            <option value="rejected"{% if user.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                        <button type="Submit">Update Status</button>
+                    </input>
+                </form>
+            </td>
+        </tr>
+            {% endfor %}
+    </table>
+</body>
+</html>

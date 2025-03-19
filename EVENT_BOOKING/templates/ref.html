@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Requests</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px; /* Initially hidden */
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: left 0.3s ease;
+            z-index: 1001; /* Ensures it's above other elements */
+            padding-top: 60px; /* Space for hamburger menu */
+            color: white;
+        }
+
+        .sidebar.show {
+            left: 0; /* Slide in */
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            padding: 12px 20px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: hsl(207, 82%, 20%);
+            color: white;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            z-index: 1002; /* Higher than sidebar */
+        }
+
+        .hamburger-menu div {
+            width: 30px;
+            height: 4px;
+            background-color: pink;
+            margin: 5px 0;
+            border-radius: 2px;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    <!-- Hamburger Menu -->
+<div class="hamburger-menu" onclick="toggleSidebar()">
+    <div></div>
+    <div></div>
+    <div></div>
+    {% comment %} <div class="notification-dot"></div> {% endcomment %}
+</div>
+
+<!-- Sidebar (Dashboard Items) -->
+<nav class="sidebar" id="sidebar">
+    <h4 class="p-3">Cook & Dine</h4>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/home"><i class="fas fa-home"></i> Home</a>
+    <a href="/user_transactions/"><i class="fas fa-calendar-check"></i> My Transactions</a>
+    <a href="/feedbacklist"><i class="fas fa-comment-alt"></i> Feedback</a>
+    <a href="/ref/"><i class="fas fa-table"></i> Refund status</a>
+    <a href="/myutensilslist"><i class="fas fa-comment-alt"></i> Utensil Cart</a>
+    <a href="/mytransutensilslist"><i class="fas fa-comment-alt"></i> Refund Transactions</a>
+    <a href="/index"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+</nav>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+    <div class="container mt-5">
+        <h1 class="mb-4">All Refund Requests</h1>
+
+        <!-- Check if there are any refund requests -->
+        {% if Event %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Transaction ID</th>
+                        <th scope="col">Refund Reason</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date Requested</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for refunds in Event %}
+                        <tr>
+                            <td>{{ refunds.transact.payment_id }}</td> <!-- Access related Payment model -->
+                            <td>{{ refunds.refdes }}</td>
+                            <td>{{ refunds.transact.amount }}</td>
+                            <td>
+                                <!-- Show refunds status -->
+                                {% if refunds.status == 'Pending' %}
+                                    <span class="badge badge-warning">Pending</span>
+                                {% elif refunds.status == 'refund' %}
+                                    <span class="badge badge-success">Refunded</span>
+                                {% elif refunds.status == 'Rejected' %}
+                                    <span class="badge badge-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ refunds.transact.created_at }}</td> <!-- Show created date -->
+                            <td>
+                                <!-- If Pending, allow to change status or take further actions -->
+                                {% if refunds.status == 'Pending' %}
+                                    <a href="{% url 'approve_refund' refunds.id %}" class="btn btn-success">Approve</a>
+                                    <a href="{% url 'reject_refund' refunds.id %}" class="btn btn-danger">Reject</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No refunds requests found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+</script>
+    <!-- Include Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Registration</title>
+    <style>
+        /* General styling for the entire page */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #ff9478, #f2709c);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.1);
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Full-page form styling */
+        form {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #f2709c;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="file"],
+        input[type="number"],
+        textarea,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #f2709c;
+            outline: none;
+            box-shadow: 0 0 8px rgba(242, 112, 156, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background-color: #f2709c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #d65f88;
+            box-shadow: 0 4px 15px rgba(242, 112, 156, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            form {
+                width: 100%;
+                padding: 20px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body>
+
+    <header>
+        Chef Registration
+    </header>
+
+    <main>
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i> Go Back
+          </button>
+
+        <form method="post" id="chefRegistrationForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h1>Join Our Chef Network</h1>
+
+            <label for="image">Upload Profile Picture:</label>
+            <input type="file" id="image" name="image" accept="image/*" />
+
+            <label for="username">Full Name:</label>
+            <input type="text" id="username" name="username" required minlength="3" maxlength="50" placeholder="Enter your full name" pattern="[A-Za-z ]+" title="Only letters and spaces are allowed." />
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required pattern="^\d{10}$" placeholder="Enter your 10-digit phone number" title="Phone number must be exactly 10 digits." />
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email address" />
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" placeholder="Enter your full address" required></textarea>
+
+            <label for="password">Create a Password:</label>
+            <input type="password" id="password" name="password" required minlength="6" placeholder="Create a strong password" title="Password must be at least 6 characters long." />
+
+            <label for="place">City / Location:</label>
+            <input type="text" id="place" name="place" required placeholder="Enter your city or location" />
+
+            <label for="languages_spoken">Languages Spoken:</label>
+            <input type="text" id="languages_spoken" name="languages_spoken" placeholder="E.g., English, Spanish, French" required />
+
+            <label for="experience">Work Experience (in years):</label>
+            <input type="number" id="experience" name="experience" required min="0" placeholder="Enter years of experience" />
+
+            <label for="signature_dishes">Signature Dishes:</label>
+            <textarea id="signature_dishes" name="signature_dishes" placeholder="List your signature dishes (comma-separated)" required></textarea>
+
+            <label for="service_area">Service Area:</label>
+            <textarea id="service_area" name="service_area" placeholder="Specify the places you can cover" required></textarea>
+
+            <label for="primary_cuisines">Primary Cuisines:</label>
+            <textarea id="primary_cuisines" name="primary_cuisines" placeholder="E.g., Italian, Chinese, Vegan" required></textarea>
+
+            <label for="services_offered">Services Offered:</label>
+            <textarea id="services_offered" name="services_offered" placeholder="E.g., Private dining, Catering, Cooking classes" required></textarea>
+
+            <label for="certifications">Upload Certifications (if any):</label>
+            <input type="file" id="certifications" name="certifications" accept=".pdf,.jpg,.png,.docx" />
+
+            <label for="work_hours_and_days">Work Hours and Days:</label>
+            <textarea id="work_hours_and_days" name="work_hours_and_days" placeholder="E.g., Mon-Fri: 9 AM - 5 PM" required></textarea>
+
+            <button type="submit">Register</button>
+        </form>
+    </main>
+
+    
+
+</body>
+</html>

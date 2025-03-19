@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Utensils List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px; /* Initially hidden */
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: left 0.3s ease;
+            z-index: 1001; /* Ensures it's above other elements */
+            padding-top: 60px; /* Space for hamburger menu */
+            color: white;
+        }
+
+        .sidebar.show {
+            left: 0; /* Slide in */
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            padding: 12px 20px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: hsl(207, 82%, 20%);
+            color: white;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            z-index: 1002; /* Higher than sidebar */
+        }
+
+        .hamburger-menu div {
+            width: 30px;
+            height: 4px;
+            background-color: pink;
+            margin: 5px 0;
+            border-radius: 2px;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+<!-- Hamburger Menu -->
+<div class="hamburger-menu" onclick="toggleSidebar()">
+    <div></div>
+    <div></div>
+    <div></div>
+    {% comment %} <div class="notification-dot"></div> {% endcomment %}
+</div>
+<nav class="sidebar" id="sidebar">
+    <h4 class="p-3">Cook & Dine</h4>
+    <a href="/admin_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/home"><i class="fas fa-home"></i> Home</a>
+    <a href="/createdecorations"><i class="fas fa-paint-brush"></i> Decoration</a>
+    <a href="/user_transactions/"><i class="fas fa-calendar-check"></i> My Transactions</a>
+    <a href="/feedbacklist"><i class="fas fa-comment-alt"></i> Feedback</a>
+    <a href="/ref/"><i class="fas fa-table"></i> Refund status</a>
+    <a href="/myutensilslist"><i class="fas fa-comment-alt"></i> Utensil Cart</a>
+    <a href="/mytransutensilslist"><i class="fas fa-comment-alt"></i> Refund Transactions</a>
+    <a href="/index"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+</nav>
+<div class="container mt-5">
+    <h1 class="text-center">My Utensils List</h1>
+
+    {% if Event %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Event Address</th>
+                    <th>Event Date</th>
+                    <th>Return Date</th>
+                    <th>Time</th>
+                    <th>Amount</th>
+                    <th>Utensils</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utensil in Event %}
+                    <tr>
+                        <td>{{ utensil.name }}</td>
+                        <td>{{ utensil.phone }}</td>
+                        <td>{{ utensil.address }}</td>
+                        <td>{{ utensil.date }}</td>
+                        <td>{{ utensil.rdate }}</td>
+                        <td>{{ utensil.time }}</td>
+                        <td>{{ utensil.amount }}</td>
+                        <td>
+                            <ul>
+                                {% for utensil_type, utensil_name in utensil.selected_utensils.items %}
+                                    <li>{{ utensil_name }}</li>
+                                {% empty %}
+                                    <li>No utensils selected</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            {% comment %} <a href="{% url 'edit_utensils' utensil.id %}" class="btn btn-warning btn-sm">Edit</a> {% endcomment %}
+                            <form action="{% url 'delete_utensils' utensil.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No utensils records found for your email.</p>
+    {% endif %}
+</div>
+
+<footer class="text-center mt-5">
+    <p>&copy; 2025 Utensils Tracker</p>
+</footer>
+<script>
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

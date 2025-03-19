@@ -1,0 +1,375 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utensil Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        
+        .cart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .cart-item button:hover {
+            background-color: darkred;
+        }
+
+        .buy-now {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .buy-now:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <h1>Your Utensil Cart</h1>
+        <div id="cart-items">
+            {% for item in add_to_cart %}
+            <div class="cart-item">
+                <span>{{ item.utensil_name }} (Qty: {{ item.quantity }})</span>
+                <button onclick="removeFromCart('{{ item.id }}')">Remove</button>
+            </div>
+            {% empty %}
+            <p>No utensils added yet.</p>
+            {% endfor %}
+        </div>
+
+        {% if add_to_cart %}
+        <form action="{% url 'buy_now' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="buy-now">Buy Now</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <script>
+        function removeFromCart(itemId) {
+            fetch(`/remove-from-cart/${itemId}/`, {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert("Error removing item.");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utensil Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        
+        .cart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .cart-item button:hover {
+            background-color: darkred;
+        }
+
+        .buy-now {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .buy-now:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <h1>Your Utensil Cart</h1>
+        <form action="{% url 'add_utensils' %}" method="POST">
+            {% csrf_token %}
+            <label for="Name">Name:</label>
+            <input type="text" name="Name" required><br><br><br>
+            
+            <label for="Phone">Phone:</label>
+            <input type="text" name="Phone" required><br><br><br>
+            
+            <label for="Address">Address:</label>
+            <input type="text" name="Address" required><br><br><br>
+            
+            <label for="Date">Event Date:</label>
+            <input type="date" name="Date" required><br><br><br>
+            
+            <label for="RDate">Return Date:</label>
+            <input type="date" name="RDate" required><br><br><br>
+            
+            <label for="Time">Event Time:</label>
+            <input type="time" name="Time" required><br><br><br>
+            
+            <label for="Utensil_selection">Select Utensil:</label>
+            <select name="Utensil_selection" required>
+                <option value="cutlery_sets">Cutlery Sets</option>
+                <option value="plates_bowls">Plates and Bowls</option>
+                <option value="serving_utensils">Serving Utensils</option>
+                <option value="specialty_tools">Specialty Tools</option>
+            </select><br><br><br>
+            
+            <label for="Quantity">Quantity:</label>
+            <input type="number" name="Quantity" min="1" required><br><br><br>
+            
+            <button type="submit">Buy Now</button>
+        </form>
+        
+        
+
+        
+
+        {% if add_to_cart %}
+        <form action="{% url 'buy_now' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="buy-now">Buy Now</button>
+        </form>
+        {% endif %}
+    </div> {% endcomment %}
+
+
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Utensil Cart</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-100 min-h-screen p-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden p-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">Your Utensil Cart</h1>
+    
+            <!-- Display User Details -->
+            {% if user_details %}
+            <div class="bg-gray-50 p-4 rounded-lg shadow-md mb-6">
+                <p><strong>Name:</strong> {{ user_details.name }}</p>
+                <p><strong>Phone:</strong> {{ user_details.phone }}</p>
+                <p><strong>Address:</strong> {{ user_details.address }}</p>
+                <p><strong>Event Date:</strong> {{ user_details.event_date }}</p>
+                <p><strong>Return Date:</strong> {{ user_details.return_date }}</p>
+                <p><strong>Event Time:</strong> {{ user_details.event_time }}</p>
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center mb-6">No details available.</p>
+            {% endif %}
+    
+            <!-- Utensil Cart Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white shadow-md rounded-2xl overflow-hidden">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Name</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Phone</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Address</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Event Date</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Return Date</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Event Time</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Utensil Name</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Utensil Quantity</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Amount</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Action</th>
+                            <th class="py-2 px-4 bg-gray-200 text-left">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if utensils %}
+                        {% for item in utensils %}
+                        <tr class="border-b">
+                            <td class="py-2 px-4">{{ item.name }}</td>
+                            <td class="py-2 px-4">{{ item.phone }}</td>
+                            <td class="py-2 px-4">{{ item.address }}</td>
+                            <td class="py-2 px-4">{{ item.event_date|default:"N/A" }}</td>
+                            <td class="py-2 px-4">{{ item.return_date|default:"N/A" }}</td>
+                            <td class="py-2 px-4">{{ item.event_time|default:"N/A" }}</td>
+                            <td class="py-2 px-4">{{ item.utensil_name|default:"N/A" }}</td>
+                            <td class="py-2 px-4">{{ item.quantity|default:"1" }}</td>
+                            <td class="py-2 px-4">₹{{ item.amount|default:"0.00" }}</td>
+                            <td class="py-2 px-4">
+                                <a href="{% url 'initiate_payment' item.id %}" class="bg-indigo-600 hover:bg-indigo-800 text-white py-2 px-4 rounded-md">
+                                    Pay Now
+                                </a>
+                                
+                            </td>
+                            <td class="py-2 px-4">
+                                <button onclick="removeFromCart('{{ item.id }}')" 
+                                    class="bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded-md">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="py-4 text-center text-gray-500">No utensils in the cart.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+        <!-- Go Back Button -->
+        <button class="fixed top-4 left-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold" onclick="window.history.back()">
+            &#8592; Go Back
+        </button>
+    </body>
+    </html>
+    
+
+
+
+    <script>
+        const csrftoken = "{{ csrf_token }}";
+        headers: { "X-CSRFToken": csrftoken }
+
+
+        {% comment %} function removeFromCart(itemId) {
+            fetch(`/remove-from-cart/${itemId}/`, {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert("Error removing item.");
+                }
+            });
+        } {% endcomment %}
+
+
+        function removeFromCart(itemId) {
+            fetch(`/remove_from_cart/${itemId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin"
+            })
+            
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let itemRow = document.getElementById(`cart_item-${itemId}`);
+                    if (itemRow) {
+                        itemRow.remove();  // Remove row from table
+                    }
+                } else {
+                    alert("Error deleting item: " + data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+        
+    </script>
+
+</body>
+</html>

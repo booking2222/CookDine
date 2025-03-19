@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with {{ receiver.username }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f7f7f7; height: 100%; display: flex; flex-direction: column; }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        }
+        .chat-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 15px;
+            max-width: 75%;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .sent {
+            background-color: #d1e7dd;
+            align-self: flex-end; /* Align to the right */
+            text-align: right;
+            margin-left: auto;
+        }
+        .received {
+            background-color: #f8d7da;
+            align-self: flex-start; /* Align to the left */
+            text-align: left;
+            margin-right: auto;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            color: #ff4d4d;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            color: #ff0000;
+        }
+        .chat-form {
+            display: flex;
+            margin-top: 10px;
+        }
+        .chat-form textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+            max-width: 85%;
+            box-sizing: border-box;
+        }
+        .chat-form button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .message small { font-size: 0.8rem; color: #666; margin-top: 5px; }
+        .media { max-width: 100%; height: auto; border-radius: 10px; margin-top: 10px; }
+        video { max-width: 100%; height: auto; margin-top: 10px; }
+
+        /* Pop-up notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            z-index: 999;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat with {{ receiver.username }}</h2>
+        </div>
+        <div class="messages" id="messages">
+            {% for message in messages %}
+                <div class="message {% if message.sender == sender.username %}sent{% else %}received{% endif %}">
+                    <p>{{ message.content }}</p>
+                    <small>{{ message.timestamp }}</small>
+
+                    {% if message.media %}
+                        {% if message.media_type == 'image' %}
+                            <img src="{{ message.media.url }}" class="media" alt="Image">
+                        {% elif message.media_type == 'video' %}
+                            <video controls>
+                                <source src="{{ message.media.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% else %}
+                            <p>Unsupported media type</p>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if message.sender == sender.username %}
+                        <form method="POST" action="{% url 'delete_message' message.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Notification -->
+        {% if notification %}
+            <div class="notification" id="notification">{{ notification }}</div>
+        {% endif %}
+
+        <form class="chat-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <textarea name="content" placeholder="Type a message..." rows="2"></textarea>
+            </div>
+            <br>
+            <br>
+            <input type="file" name="media" accept="image/*,video/*" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px;">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+    <script>
+        // Display the pop-up notification if it exists
+        {% if notification %}
+            setTimeout(function() {
+                document.getElementById('notification').style.display = 'block';
+                setTimeout(function() {
+                    document.getElementById('notification').style.display = 'none';
+                }, 3000); // Hide the notification after 3 seconds
+            }, 500); // Show after a slight delay
+        {% endif %}
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    .back-button {
+      position: fixed; /* Keeps it in the top-left corner */
+      top: 90px;
+      left: 10px;
+      right:120px;
+      padding: 10px 20px;
+      width:auto;
+      max-width:150px;
+      text-transform: uppercase;
+      background-color: rgb(138, 72, 182); /* Button color */
+      color: white;
+      border-radius: 25px;
+      font-size: 18px; /* Small button text */
+      font-weight: bold;
+      font-size: 1rem;
+      align-items: center;
+    }
+    
+    .back-button:hover {
+      background-color: rgb(206, 148, 243); /* Darker shade on hover */
+    }
+    
+    .back-button i {
+      font-size: 16px; /* Icon size */
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1c1e21; /* Outer background */
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .admin-panel {
+      background-color: #26292c; /* Panel background */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      width: 300px;
+      text-align: center;
+    }
+
+    .admin-panel h1 {
+      color: white;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    .admin-panel label {
+      display: block;
+      color: #9a9b9d;
+      font-size: 0.9em;
+      text-align: left;
+      margin-top: 15px;
+    }
+
+    .admin-panel input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: none;
+      border-bottom: 2px solid #00bcd4; /* Line color */
+      background: transparent;
+      color: white;
+      font-size: 1em;
+    }
+
+    .admin-panel input:focus {
+      outline: none;
+      border-bottom: 2px solid #03a9f4; /* Highlight color */
+    }
+
+    .admin-panel button {
+      background: transparent;
+      border: 2px solid #00bcd4;
+      color: #00bcd4;
+      padding: 10px 15px;
+      font-size: 1em;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    .admin-panel button:hover {
+      background: #00bcd4;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </button>
+
+  <div class="admin-panel">
+    <h1>ADMIN PANEL</h1>
+
+        <form method="post" id="loginForm">
+            <div class="adminlogin">
+                {% csrf_token %}
+                
+                <label for="username">USERNAME</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">PASSWORD</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit">LOGIN</button>
+
+                <p><a href="#">Forgot Password?</a></p>
+                <p>Not yet registered?<a href="/register/"> Register here</a></p>
+            </div>
+        </form>
+  </div>
+
+
+  <script>
+
+    document.getElementById('toggle-password').addEventListener('click', function () {
+                const passwordField = document.getElementById('password');
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                
+                // Optional: Change the icon based on the visibility state
+                const icon = this.querySelector('.eye-icon');
+                icon.textContent = type === 'password' ? '👁️' : '🙈'; // Example icons for visibility toggle
+              });
+    
+            document.getElementById('login').addEventListener('submit', function(Event) {
+                // Prevent form submission if validation fails
+                if (!this.checkValidity()) {
+                    event.preventDefault(); // Prevent form submission
+                    alert("Please fill out all required fields correctly.");
+                }
+            });
+    
+            // Optional: Custom validation for password strength
+            const passwordInput = document.getElementById('password');
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                if (password.length < 6) {
+                    this.setCustomValidity('Password must be at least 6 characters long.');
+                } else if (!/[A-Z]/.test(password)) {
+                    this.setCustomValidity('Password must include at least one uppercase letter.');
+                } else if (!/[0-9]/.test(password)) {
+                    this.setCustomValidity('Password must include at least one number.');
+                } else {
+                    this.setCustomValidity(''); // Clear custom validity message
+                }
+            });
+        </script>
+</body>
+</html>
+
+

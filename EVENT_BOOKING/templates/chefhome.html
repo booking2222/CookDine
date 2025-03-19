@@ -1,0 +1,476 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Homepage</title>
+    <style>
+        .chat-button {
+            position: fixed;
+            display: flex;
+            bottom:20px;
+            left:1450px;
+            right:10px;
+            width:auto;
+            max-width:220px;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        
+        .chat-icon {
+            background: #e91e63; /* Pink background */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .chat-button:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: -250px; /* Initially Hidden */
+            width: 250px;
+            transition: 0.3s;
+            padding-top: 20px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        /* Hamburger Menu Styling */
+        .hamburger-menu {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            color: #f2709c;
+            cursor: pointer;
+            z-index: 1100;
+            width: 30px;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-menu div {
+            width: 100%;
+            height: 4px;
+            background-color:  #f2709c;
+            transition: 0.3s;
+        }
+
+        /* Adjust content when sidebar is open */
+        .main-content {
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar-open {
+            left: 0;
+        }
+
+        .content-move {
+            margin-left: 250px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: right;
+            padding: 20px;
+            background-color:black ;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 7;
+            transition: 0.5s;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            position: absolute;
+            top: 40px;
+            right: 200px;
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-book {
+            background-color:#ffff;
+            border: 2px solid #ffa500;
+            background-color: none;
+            color: black;
+            border: 2px solid #ffa500;
+            padding: 10px 20px;
+            text-decoration: black;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-book:hover {
+            background-color: #ffa500; /* Hover background color */
+            color: black; /* Text color on hover */
+          }
+
+        .home {
+            content:" ";
+            width:100%;
+            height:70vh;
+            text-align: center;
+            padding: 100px 20px;
+            background-image: url("../static/images/cf1.jpg"); /* Replace with actual image URL */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+
+
+
+        .home h1 {
+            color: #ffff;
+            font-size: 60px;
+            margin-top: 30px;
+        }
+
+        .home p {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            color: black;
+            font-weight: bold;
+        }
+
+        h3 {
+            margin-top: 40px;
+            color:  #ffa500;
+        }
+
+        .btn-register {
+            background-color:#ffff;
+            border: 2px solid #ffa500;
+            background-color: none;
+            color: black;
+            border: 2px solid #ffa500;
+            padding: 10px 30px;
+            text-decoration: black;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover {
+            background-color: #ffa500; /* Hover background color */
+            color: black; /* Text color on hover */
+          }
+
+        .section {
+            padding: 60px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+
+        .section img {
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        .section-content {
+            max-width: 500px;
+        }
+
+        .section-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .section-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <br><br>
+        <h2 class="text-center">Chef Panel</h2>
+        <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/cheftransactions/"><i class="fas fa-utensils"></i> User Bookings</a>
+        <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+    <button class="back-button" onclick="window.history.back()">Go Back</button>
+<link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+<button class="back-button" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </button>
+    <header>
+        <div class="logo">
+            <img src=" " alt="An image">
+        </div>
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="text-pink-500 mb-0">COOK&Dine</h1>
+        <nav>
+            <ul id="menuitem">
+                <li><a href="/chefhome/">HOME</a></li>
+                
+                <li><a href="/chef_profile/">PROFILE</a></li>
+                <li><a href="/home/">USER PAGE</a></li>
+                <li><a href="/chef_events/">BOOKINGS</a></li>
+                <li><a href="/logout/">LOG OUT</a></li>
+            </ul>
+        </nav>
+        {% comment %} <a href="/organizereventcreate/" class="btn-book">Join our community</a> {% endcomment %}
+        </div> 
+    </header>
+
+    
+
+    <section class="home">
+        <h3>Discover Your Taste</h3>
+        <h1>We Believe Good Food Offers Great Smile</h1>
+        <p>Experience the joy of delicious, home-cooked meals prepared with care by professional chefs.</p>
+        <a href="/organizereventcreate/" class="btn-register">Add your package</a>
+    </section>
+
+    <section class="section">
+        <div class="section-content">
+            <h2>We Provide Good Food For Your Loved Ones!</h2>
+            <p>Delight in our chef-curated meals crafted with fresh ingredients to bring a smile to your loved ones.</p>
+            <ul>
+                <li>Healthy and nutritious meals</li>
+                <li>Customizable menus</li>
+                <li>Top-rated chefs</li>
+            </ul>
+        </div>
+        <img src="{% static 'images/CHEF.png' %}" width="100" height="200">
+        </section>
+
+    <footer class="footer">
+        <p>Please Choose The Right One To Enlighten Your Day</p>
+    </footer>
+    <div class="menu">
+        <ul>
+            <li class="light">Candle Light Dinner</li>
+            <li>Home Cooking</li>
+            <li>Parties</li>
+        </ul> 
+        <div class="container overflow-x-auto py-4">
+            <div class="container-fluid py-5" style="background-color: #F9C7A6;">
+                <center><h2 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold;">Our Services</h2></center>
+        <div class="container">
+            <div class="row md-6 align-items-center justify-content-center"> <!-- "g-4" adds spacing between cards -->
+    
+                <div class="row-12 row-sm-6 col-md-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/private_chef.jpg' %}" class="card-img-top" alt="Private Chefs">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Private Chefs</h5>
+                            <p class="card-text">Enjoy a personalized dining experience in the comfort of your home with our private chef services</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/catering.jpg' %}" class="card-img-top" alt="Catering Solutions">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Catering Solutions</h5>
+                            <p class="card-text">Delight your guests with exceptional cuisine tailored to your event and  we provide flavors that leave a lasting impression</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/candle_light.jpg' %}" class="card-img-top" alt="Candle light dinner">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Candle Light Dinner</h5>
+                            <p class="card-text">Indulge in an intimate and romantic dining experience with our beautifully curated candle light dinner</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/home_cooking.jpg' %}" class="card-img-top" alt="Home Cooking">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Home Cooking</h5>
+                            <p class="card-text">Experience the warmth and comfort of delicious home-cooked meals prepared with love and care</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/event_decoration.jpg' %}" class="card-img-top" alt="Decoration">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a href="#" class="text-decoration-none" style="color: inherit;">Event Decoration</a></h5>
+                            <p class="card-text">Transform your event with stunning decor tailored to your theme and style</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/rental_utensil.jpg' %}" class="card-img-top" alt="Utensils">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a href="#" class="text-decoration-none" style="color: inherit;">Rental Utensils</a></h5>
+                            <p class="card-text">Rent premium kitchen utensils and equipment for your next cooking adventure or event</p>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+
+
+    
+        
+    
+    
+    {% if Event %}
+    <div class="row g-4 justify-content-center">
+        {% for item in Event %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <p class="text-muted">Price: {{ item.price }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">No packages available at the moment.</p>
+    {% endif %}     
+
+    
+    {% comment %} {% if user_type and username %}
+    <a href="{% url 'chat_detail' %}" class="chat-button">
+        <div class="chat-icon">💬</div>
+        <div class="chat-text">Chat with us 👋</div>
+    </a>
+{% else %}
+    <a href="{% url 'login' %}" class="chat-button">
+        <div class="chat-icon">🔒</div>
+        <div class="chat-text">Login to Chat</div>
+    </a>
+{% endif %} {% endcomment %}
+</div>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+<!-- Sidebar Toggle Script -->
+<script>
+    function toggleSidebar() {
+        let sidebar = document.getElementById("sidebar");
+        let mainContent = document.getElementById("mainContent");
+
+        sidebar.classList.toggle("sidebar-open");
+        mainContent.classList.toggle("content-move");
+    }
+</script>
+</body>
+
+</html>

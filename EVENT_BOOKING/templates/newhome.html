@@ -1,0 +1,799 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management</title>
+    <!-- Bootstrap CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #FDE2D5; /* Matching background color from the image */
+        }
+        .chat-button {
+            position: fixed;
+            display: flex;
+            bottom:20px;
+            left:1450px;
+            right:10px;
+            width:auto;
+            max-width:220px;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        
+        .chat-icon {
+            background: #e91e63; /* Pink background */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        
+        .chat-button:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+          
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            background-color: #343a40;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .hamburger-menu {
+            color: pink;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            cursor: pointer;
+            z-index: 1000; /* Make sure it's above everything else */
+        }
+
+        .hamburger-menu div {
+            width: 30px;
+            height: 4px;
+            background-color: pink;
+            margin: 5px 0;
+            border-radius: 2px;
+        }
+        {% comment %} header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            z-index: 1000; /* Ensures it stays above other elements */
+        } {% endcomment %}
+
+        
+            /* Sidebar (Dashboard) */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -250px; /* Initially hidden */
+                width: 250px;
+                height: 100%;
+                background-color:rgba(0,0,0,0.2);
+                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+                transition: left 0.3s ease;
+                z-index: 999;
+                padding-top: 50px; /* Space for hamburger menu */
+            }
+    
+            .sidebar.show {
+                left: 0; /* Slide in */
+            }
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+            }
+    
+            .sidebar a:hover {
+                background-color:hsl(207, 81.80%, 2.20%);
+            }
+    
+    
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+    
+            .sidebar ul li {
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
+            }
+    
+            .sidebar ul li a {
+                text-decoration: none;
+                color: #333;
+            }
+    
+            /* Page Content */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+    
+            .content {
+                padding: 20px;
+                margin-left: 0; /* No offset by default */
+            }
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+        
+        .text-pink {
+            color: #e91e63;
+        }
+        .btn-pink {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        .btn-outline-pink {
+            border-color: #e91e63;
+            color: #e91e63;
+        }
+        
+        .btn-outline-pink:hover {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 99;
+            font-size: 14px;
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            outline: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+        }
+        
+        #scrollTopBtn:hover {
+            background-color: #d81b60;
+        }
+        
+
+        .book-now-btn {
+            background-color: #6f42c1;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .book-now-btn:hover {
+            background-color: #6f42c1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        /* When sidebar is open */
+        .sidebar-open .sidebar {
+            left: 0;
+        }
+
+        .sidebar-open .main-content {
+            margin-left: 250px;
+        }
+
+        /* Optional - Content spacing when sidebar is hidden */
+        .main-content {
+            padding-left: 15px;
+        }
+        .sidebar i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+{% comment %} feedback {% endcomment %}
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        
+
+        .feedback-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #6f42c1;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #6f42c1;
+        }
+    </style>
+</head>
+<body style="background-color: #F9C7A6; margin: 0; padding: 0;">
+    
+<!-- Hamburger Menu -->
+<div class="hamburger-menu" onclick="toggleSidebar()">
+    <div></div>
+    <div></div>
+    <div></div>
+    {% comment %} <div class="notification-dot"></div> {% endcomment %}
+</div>
+
+<!-- Sidebar (Dashboard Items) -->
+<div class="container-fluid Sidebar">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 sidebar" id="sidebar">
+            <h4 class="p-3">Cook & Dine</h4>
+            <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/home"><i class="fas fa-home"></i> Home</a>
+            <a href="/user_transactions/"><i class="fas fa-calendar-check"></i> my Transaction</a>
+            <a href="/feedbacklist"><i class="fas fa-comment-alt"></i> Feedback</a>
+            <a href="/myutensilslist"><i class="fas fa-comment-alt"></i> Utensil Cart</a>
+            <a href="/mytransutensilslist"><i class="fas fa-comment-alt"></i> Refund Transactions</a>
+            <a href="/index"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </nav>
+
+    <!-- Header -->
+    <header class="bg-dark text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="text-pink-500 mb-0">COOK&Dine</h1>
+            <nav>
+                <ul class="nav">
+                    <li class="nav-item"><a href="#" class="nav-link text-white">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-white">About Us</a></li>
+            
+                    <li class="nav-item"><a href="{% url 'chat_list' %}" class="nav-link text-white">Go to chat</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle text-white" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" id="services-dropdown" aria-labelledby="servicesDropdown">
+                            <li><a href="/chefcard/" class="dropdown-item">Chef Booking</a></li>
+                            <li><a href="/utensils/" class="dropdown-item">Rental Utensils</a></li>
+                            <li><a href="{% url 'dcarts' %}" class="dropdown-item">Decoration</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="/profile/" class="nav-link text-white">Profile</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-white">Contact Us</a></li>
+                    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link text-white">Log out</a></li>
+                    {% comment %} <li class="nav-item">
+                        <a href="#" class="btn btn-outline-pink text-pink">Request Quote</a>
+                    </li> {% endcomment %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Carousel Section -->
+    <main>
+        <div id="carouselExampleSlidesOnly" class="carousel slide custom-width" data-bs-ride="carousel" style="width: 100%; height: 80%; margin: 0 auto;">
+            <!-- Optional Indicators (the dots at the bottom) -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                <button type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide-to="6" aria-label="Slide 7"></button>
+            </div>
+    
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active" data-bs-interval="2000">
+                    <img src="{% static 'images/Userhom.png' %}" loading="lazy" class="d-block w-100" alt="Slide 1">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">Explore</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 2 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/slide2.jpg' %}" class="d-block w-100" alt="Slide 2">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">India's leading Event & Wedding Management Company</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 3 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/Userhom.png' %}" class="d-block w-100" alt="Slide 3">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">Explore</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 4 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/slide4.jpg' %}" class="d-block w-100" alt="Slide 4">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">India's leading Event & Wedding Management Company</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 5 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/slide5.jpg' %}" class="d-block w-100" alt="Slide 5">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">India's leading Event & Wedding Management Company</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 6 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/slide6.jpg' %}" class="d-block w-100" alt="Slide 6">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">India's leading Event & Wedding Management Company</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+    
+                <!-- Slide 7 -->
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="{% static 'images/slide7.jpg' %}" class="d-block w-100" alt="Slide 7">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1 class="display-4 fw-bold">India's leading Event & Wedding Management Company</h1>
+                        <a href="#" class="btn btn-pink mt-4">Let’s Talk — Send a Message</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Optional Previous/Next Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    
+        <footer class="bg-dark text-white py-4">
+            <div class="container text-center">
+                <p>Email us at <a href="mailto:shivani@eventplus.co.in" class="text-pink">shivani@eventplus.co.in</a></p>
+                <div class="d-flex justify-content-center">
+                    <p>Follow us on 
+                        <a href="#" class="text-pink mx-2"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="#" class="text-pink mx-2"><i class="fab fa-facebook"></i> Facebook</a>
+                        <a href="#" class="text-pink mx-2"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                    </p>
+                    
+                </div>
+                <p class="mt-3">&copy; 2025 COOK&Dine. All Rights Reserved.</p>
+            </div>
+        </footer>
+        
+    </main>
+       
+<div class="container overflow-x-auto py-4">
+    <div class="container-fluid py-5" style="background-color: #F9C7A6;">
+        <h2 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold;">Our Services</h2>
+    
+        <div class="container">
+            <div class="row g-4 justify-content-center"> <!-- "g-4" adds spacing between cards -->
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/private_chef.jpg' %}" class="card-img-top" alt="Private Chefs">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Private Chefs</h5>
+                            <p class="card-text">Enjoy a personalized dining experience in the comfort of your home with our private chef services</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/catering.jpg' %}" class="card-img-top" alt="Catering Solutions">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Catering Solutions</h5>
+                            <p class="card-text">Delight your guests with exceptional cuisine tailored to your event and  we provide flavors that leave a lasting impression</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/candle_light.jpg' %}" class="card-img-top" alt="Candle light dinner">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Candle Light Dinner</h5>
+                            <p class="card-text">Indulge in an intimate and romantic dining experience with our beautifully curated candle light dinner</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/home_cooking.jpg' %}" class="card-img-top" alt="Home Cooking">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Home Cooking</h5>
+                            <p class="card-text">Experience the warmth and comfort of delicious home-cooked meals prepared with love and care</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/event_decoration.jpg' %}" class="card-img-top" alt="Decoration">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a href="#" class="text-decoration-none" style="color: inherit;">Event Decoration</a></h5>
+                            <p class="card-text">Transform your event with stunning decor tailored to your theme and style</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <img src="{% static 'images/rental_utensil.jpg' %}" class="card-img-top" alt="Utensils">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><a href="#" class="text-decoration-none" style="color: inherit;">Rental Utensils</a></h5>
+                            <p class="card-text">Rent premium kitchen utensils and equipment for your next cooking adventure or event</p>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center">
+        <!-- Left side: Text Description -->
+        <div class="row-md-6">
+            <h2 class="mb-4" style="font-weight: bold; font-size: 2.5rem; text-align: center;">Culinary delight package</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                We bring culinary excellence right to your table. Whether you crave a comforting home-cooked meal, a romantic candlelight dinner, or elegant catering for your special event, our expert chefs craft unforgettable dining experiences tailored just for you.<br><br>
+
+<h4>Our Exclusive Chef Packages</h4><br><br>
+<h5>🍽 Home Cooking Experience</h5><br>
+Enjoy the warmth of a home-cooked meal with a touch of gourmet perfection. Our chefs prepare delicious, personalized dishes using the freshest ingredients,nutritious and healthier food right in your own kitchen. Perfect for families, busy professionals, or anyone who loves great food without the hassle of cooking.<br><br><br>
+
+<h5>🕯 Romantic Candlelight Dinner</h5><br>
+Turn your special moments into lasting memories with a beautifully curated candlelight dinner. Our chefs create an intimate dining experience complete with a customized menu, elegant table setup, and the perfect ambiance for a romantic evening.<br><br><br>
+
+<h5>🎉 Event & Party Catering</h5><br>
+From intimate gatherings to grand celebrations, we offer premium catering services to impress your guests. Whether it’s a birthday, wedding, corporate event, or private party, we provide mouth-watering dishes and exceptional presentation to elevate your event.<br><br><br>
+
+<h5>👨‍🍳 Personal Chef Services</h5><br>
+Need a professional chef for a day, a week, or an extended period? Our personal chef services bring you customized meal plans, private dining, and live cooking experiences tailored to your dietary needs and lifestyle.<br><br><br>
+<h4>Why Choose Us?</h4><br>
+✔ Fresh, high-quality ingredients<br>
+✔ Customizable menus to suit your taste<br>
+✔ Professional, experienced chefs<br>
+✔ Unmatched attention to detail and service<br>
+✔ Healthy and nutritious food at your table<br><br><br>
+
+
+✨ Book Your Perfect Dining Experience Today! ✨<br><br><br>
+<body class="p-6">
+    <div class="max-w-6xl mx-auto">
+        {% comment %} <h1 class="text-3xl font-bold text-center mb-6">Chef Packages</h1> {% endcomment %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for event in chefs %}
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                {% if event.chefimage %}
+                <img src="{{ event.chefimage.url }}" alt="Chef Image" class="w-full h-48 object-cover">
+                {% else %}
+                <img src="/static/default_chef.jpg" alt="No image" class="w-full h-48 object-cover">
+                {% endif %}
+                            <div class="p-4">
+                    <h2 class="text-xl font-semibold text-center mb-6">{{ event.packagename }}</h2>
+                    <h4 class="text-gray-700 mt-2">{{ event.category }}</h4>
+                    <p class="text-gray-700 mt-2">{{ event.details }}</p>
+                    <p class="text-gray-700 mt-2">{{ event.chefname }}</p>
+                    <p class="text-gray-500 mt-1">Date: {{ event.fromdate }}</p>
+                    <p class="text-gray-500 mt-1">Date: {{ event.todate }}</p>
+                    <p class="text-gray-500">Price: ${{ event.rentperday }}</p>
+                </div>
+                
+                <button>
+                    <a href="/add_cart/{{ event.id }}"class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                        Book Now</a>
+                </button>
+                
+                
+                
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+<br><br><br><br>
+
+
+    <!-- Event Decoration Description Section -->
+<div class="container my-5">
+    <div class="row align-items-center">
+        <!-- Left side: Text Description -->
+        <div class="col-md-6">
+            <h2 class="mb-4" style="font-weight: bold; font-size: 2.5rem;">Event Decoration</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                Transform your special occasions into unforgettable experiences with our bespoke event decoration services. 
+                From elegant tablescapes and enchanting floral arrangements to themed backdrops and lighting that sets the perfect mood, 
+                we bring your vision to life with creativity and precision. Whether it's a cozy dinner party, a lavish wedding, or a corporate gala, 
+                our expert decorators curate every detail to match your unique style, leaving a lasting impression on you and your guests.
+            </p>
+        </div>
+
+        <!-- Right side: Image -->
+        <div class="col-md-6 d-flex justify-content-center">
+            <img src="{% static 'images/event_decor.jpg' %}" 
+                 alt="Event Decoration" 
+                 class="img-fluid rounded shadow-sm" 
+                 style="max-height: 350px; object-fit: cover; width: 100%;">
+        </div>
+    </div>
+</div>
+
+
+<!-- Packages Section -->
+
+<h2 class="text-center mb-5" style="font-size: 2rem; font-weight: bold;">Our Decoration Packages</h2>
+{% if Event %}
+<!-- Packages Grid Section -->
+<div class="container">
+    <div class="row g-4 justify-content-center">  <!-- g-4 adds gap between cards -->
+        {% for item in Event %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+            <div class="card shadow-sm" style="width: 18rem;">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="w-100 d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f0f0f0; color: #555;">
+                        No Image
+                    </div>
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="font-size: 1.25rem; font-weight: bold;">{{ item.name }}</h5>
+                    <a href="{% url 'decoration_detail' item.id %}" class="btn book-now-btn">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+    <p class="text-center">No decoration packages available at the moment.</p>
+    {% endif %}
+
+
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="font-size: 2rem; font-weight: bold;">Rent Kitchen Utensils</h2>
+    <p class="text-center mb-4" style="font-size: 1rem; max-width: 800px; margin: 0 auto;">
+        Planning a special event, family gathering, corporate function, or a private dinner at home? Our comprehensive utensil rental service offers a wide range of high-quality kitchen tools and equipment to ensure your cooking and serving process runs smoothly. Whether you're hosting an intimate dinner for a few guests or catering a larger celebration, having the right utensils on hand can make all the difference.
+
+From essential cookware like pots, pans, and baking trays, to specialized tools such as graters, peelers, and tongs — we provide everything you need to prepare your dishes with confidence. Our collection also includes elegant serving platters, bowls, cutlery, and glassware to ensure your presentation is just as impressive as your cooking.
+
+Renting utensils is a practical and cost-effective option, especially for one-time events or when you need specialized equipment that you don’t typically keep in your kitchen. Plus, you’ll save time and storage space by returning everything when your event is over — no need for long-term investment or clutter.
+
+Whether you're a professional chef looking for extra equipment for an off-site event, or a home cook hosting a celebration, our rental service provides flexibility, convenience, and quality. Browse our selection and customize your rental package to suit your event’s unique needs.
+
+
+    </p>
+    <div class="container my-5">
+        <h6 class="text-center mb-4" style="font-size: 2rem;">Book now for your specific desired utensils</h6>
+    <div class="row justify-content-center g-4">
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <img src="{% static 'images/utensil_1.jpg' %}" alt="Utensil 1" class="img-fluid rounded shadow" style="height: 200px; object-fit: cover; width:100%;">
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <img src="{% static 'images/catering_utensil.jpg' %}" alt="Utensil 2" class="img-fluid rounded shadow" style="height: 200px; object-fit: cover; width:100%;">
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <img src="{% static 'images/utensil_rental3.jpg' %}" alt="Utensil 3" class="img-fluid rounded shadow" style="height: 200px; object-fit: cover; width:100%;">
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{% url 'utensils' %}" class="btn book-now-btn" style="padding: 10px 20px; font-size: 1rem; font-weight: bold;">
+        Book Now
+    </a>
+</div>
+</div>
+<div class="container my-5">
+    <h6 class="text-center mb-4" style="font-size: 2rem; font-weight: bold; font-color=#E6E6FA;">Please give feedback of your experience </h6>
+
+    <!-- Main Content -->
+    <main class="col-md-10">
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand row justify-content-center g-4" href="#">Feedback Form</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Feedback Form Section -->
+        <div class="feedback-container">
+            <h1 class="mb-4">Feedback Form</h1>
+            <form action="/feedback_rate/" method="post">
+                {% csrf_token %}
+                <label for="feedback">Your Feedback:</label>
+                <textarea id="feedback" name="feedback_text" placeholder="Write your feedback here..." required></textarea>
+
+                <div class="rating mb-3">
+                    <label>Rating:</label>
+                    <input type="radio" id="rating1" name="rating" value="1">
+                    <label for="rating1">1</label>
+                    <input type="radio" id="rating2" name="rating" value="2">
+                    <label for="rating2">2</label>
+                    <input type="radio" id="rating3" name="rating" value="3">
+                    <label for="rating3">3</label>
+                    <input type="radio" id="rating4" name="rating" value="4">
+                    <label for="rating4">4</label>
+                    <input type="radio" id="rating5" name="rating" value="5">
+                    <label for="rating5">5</label>
+                </div>
+
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+    </main>
+</div>
+</div>
+<button class="back-button" onclick="window.history.back()">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </button>
+
+  {% if user_type and username %}
+    <a href="{% url 'chat_detail' %}" class="chat-button">
+        <div class="chat-icon">💬</div>
+        <div class="chat-text">Chat with us 👋</div>
+    </a>
+{% else %}
+    <a href="{% url 'login' %}" class="chat-button">
+        <div class="chat-icon">🔒</div>
+        <div class="chat-text">Login to Chat</div>
+    </a>
+{% endif %}
+
+
+    
+</a>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+    
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-open');
+        }
+    
+
+
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+        document.getElementById("scrollTopBtn").style.display = 
+            document.documentElement.scrollTop > 300 ? "block" : "none";
+    }
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+</script>
+
+
+
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+
+</html>

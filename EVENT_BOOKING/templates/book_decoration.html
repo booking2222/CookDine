@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Decoration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const baseAmount = parseFloat("{{ decoration.amount }}") || 0; // Base decoration cost
+            const utensils = {{ UTENSIL_PRICES|safe }}; // JSON of utensil prices
+            let totalPrice = 0; // Initially set total price to 0
+    
+            function calculateTotalPrice() {
+                let eventDate = new Date(document.querySelector("input[name='date']").value);
+                let returnDate = new Date(document.querySelector("input[name='rdate']").value);
+    
+                // Calculate number of days (return date - event date)
+                let days = (returnDate - eventDate) / (1000 * 60 * 60 * 24);
+                if (isNaN(days) || days < 1) days = 1; // Ensure at least 1 day
+    
+                totalPrice = baseAmount * days; // Base price based on days
+    
+                // Loop through all utensil select dropdowns
+                document.querySelectorAll(".utensil-select").forEach(select => {
+                    const utensil = select.dataset.utensil;
+                    const quantity = parseInt(select.value) || 0;
+    
+                    // If utensil exists in price list, add its cost
+                    if (utensils[utensil]) {
+                        totalPrice += utensils[utensil] * quantity;
+                    }
+                });
+    
+                document.getElementById("total-price").textContent = `$${totalPrice}`;
+                document.getElementById("total-amount-input").value = totalPrice; // Update hidden input
+            }
+    
+            // Attach event listeners
+            document.querySelectorAll(".utensil-select").forEach(select => {
+                select.addEventListener("change", calculateTotalPrice);
+            });
+    
+            document.querySelector("input[name='date']").addEventListener("change", calculateTotalPrice);
+            document.querySelector("input[name='rdate']").addEventListener("change", calculateTotalPrice);
+    
+            // **Call the function once on page load to initialize the price**
+            calculateTotalPrice();
+        });
+    </script>
+    
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-2xl font-bold text-center mb-4">Book Decoration</h1>
+
+        <!-- Decoration Details -->
+        <div class="mb-4">
+            <img src="{{ decoration.image.url }}" alt="Decoration Image" class="w-full h-48 object-cover rounded-lg">
+        </div>
+        <h2 class="text-xl font-semibold">{{ decoration.name }}</h2>
+        <p class="text-gray-700 mt-2"><strong>Event:</strong> {{ decoration.event }}</p>
+        <p class="text-gray-700 mt-2"><strong>Duration:</strong> {{ decoration.timeduration }} hours</p>
+        <p class="text-gray-700 mt-2"><strong>Base Amount (Per Day):</strong> ${{ decoration.amount }}</p>
+        <p class="text-gray-700 mt-2"><strong>Description:</strong> {{ decoration.description }}</p>
+
+        <!-- User Details -->
+        <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+            <h3 class="text-lg font-semibold">User Details</h3>
+            <p class="text-gray-700"><strong>Name:</strong> {{ usrd.username }}</p>
+            <p class="text-gray-700"><strong>Email:</strong> {{ usrd.email }}</p>
+            <p class="text-gray-700"><strong>Contact:</strong> {{ usrd.phone }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Event Date -->
+            <div class="mt-4">
+                <label class="block font-semibold">Event Date:</label>
+                <input type="date" name="date" required class="border p-2 w-full rounded">
+            </div>
+
+            <!-- Return Date -->
+            <div class="mt-4">
+                <label class="block font-semibold">Return Date:</label>
+                <input type="date" name="rdate" required class="border p-2 w-full rounded">
+            </div>
+
+            <!-- Time -->
+            <div class="mt-4">
+                <label class="block font-semibold">Time:</label>
+                <input type="time" name="time" required class="border p-2 w-full rounded">
+            </div>
+
+            <!-- Extra Utensils Selection -->
+            <div class="mt-4">
+                <h3 class="text-lg font-semibold">Select Extra Utensils</h3>
+                
+                {% for utensil, price in UTENSIL_PRICES.items %}
+                    <div class="mt-2">
+                        <label class="block font-semibold">{{ utensil|title }} (${{ price }} each)</label>
+                        <select name="Quantity_{{ utensil }}" class="border p-2 w-full rounded utensil-select" data-utensil="{{ utensil }}">
+                            <option value="0">None</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                {% endfor %}
+            
+                <!-- Additional Fixed Utensils -->
+                <div class="mt-2">
+                    <label class="block font-semibold">Chair ($100 each)</label>
+                    <select name="Quantity_chair" class="border p-2 w-full rounded utensil-select" data-utensil="chair">
+                        <option value="0">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            
+                <div class="mt-2">
+                    <label class="block font-semibold">Table ($150 each)</label>
+                    <select name="Quantity_table" class="border p-2 w-full rounded utensil-select" data-utensil="table">
+                        <option value="0">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            
+                <div class="mt-2">
+                    <label class="block font-semibold">Light ($50 each)</label>
+                    <select name="Quantity_light" class="border p-2 w-full rounded utensil-select" data-utensil="light">
+                        <option value="0">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            
+                <div class="mt-2">
+                    <label class="block font-semibold">Generator ($300 each)</label>
+                    <select name="Quantity_generator" class="border p-2 w-full rounded utensil-select" data-utensil="generator">
+                        <option value="0">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            
+
+            <!-- Total Price Display -->
+            <div class="mt-4 p-4 bg-blue-100 rounded">
+                <h3 class="text-lg font-semibold">Total Price: <span id="total-price">${{ decoration.amount }}</span></h3>
+            </div>
+
+            <!-- Hidden Input to Store Total Amount -->
+            <input type="hidden" name="total_amount" id="total-amount-input" value="{{ decoration.amount }}">
+
+            <!-- Submit Button -->
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded w-full mt-6 hover:bg-green-600 transition">
+                Confirm Booking
+            </button>
+        </form>
+
+        <a href="{% url 'dcarts' %}" class="block text-center text-blue-500 mt-4">Back to Decoration List</a>
+    </div>
+</body>
+</html>

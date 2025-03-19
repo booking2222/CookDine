@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoration Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function bookNow(decorationId) {
+            // Smooth transition effect before redirecting
+            document.body.style.opacity = "0.5";  
+            setTimeout(() => {
+                window.location.href = `/book_decoration/${decorationId}/`;
+            }, 300);
+        }
+    </script>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+
+    </style>
+</head>
+<body class="bg-gray-100 p-6 transition-opacity duration-300">
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">Decoration Packages</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in obj %}
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="Decoration Image" class="w-full h-48 object-cover">
+                {% else %}
+                <img src="/static/default_image.jpg" alt="No image" class="w-full h-48 object-cover">
+                {% endif %}
+
+                <div class="p-4">
+                    <h2 class="text-xl font-semibold text-center">{{ item.name }}</h2>
+                    <p class="text-gray-700 mt-2"><strong>Event:</strong> {{ item.event }}</p>
+                    <p class="text-gray-700 mt-2"><strong>Duration:</strong> {{ item.timeduration }} hours</p>
+                    <p class="text-gray-700 mt-2"><strong>Amount:</strong> ${{ item.amount }}</p>
+                    <p class="text-gray-700 mt-2"><strong>Description:</strong> {{ item.description }}</p>
+
+                    <!-- Display selected utensils -->
+                    <p class="text-gray-700 mt-2"><strong>Utensils:</strong></p>
+                    <ul class="list-disc pl-5">
+                        {% for key, value in item.selected_utensils.items %}
+                            <li>{{ key|title }}: {{ value }}</li>
+                        {% empty %}
+                            <li>No utensils selected</li>
+                        {% endfor %}
+                    </ul>
+
+                    <button 
+                        onclick="bookNow('{{ item.id }}')" 
+                        class="bg-red-500 text-white px-4 py-2 rounded w-full mt-4 hover:bg-red-600 transition duration-300">
+                        Book Now
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

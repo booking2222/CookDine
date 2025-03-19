@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Decoration</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        .back-button {
+            position: fixed; /* Keeps it in the top-left corner */
+            top: 90px;
+            left: 10px;
+            right:120px;
+            padding: 10px 20px;
+            width:auto;
+            max-width:150px;
+            text-transform: uppercase;
+            background-color: rgb(138, 72, 182); /* Button color */
+            color: white;
+            border-radius: 25px;
+            font-size: 18px; /* Small button text */
+            font-weight: bold;
+            font-size: 1rem;
+            align-items: center;
+          }
+          
+          .back-button:hover {
+            background-color: rgb(206, 148, 243); /* Darker shade on hover */
+          }
+          
+          .back-button i {
+            font-size: 16px; /* Icon size */
+          }
+          
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Confirm Purchase</h1>
+        <p class="text-xl text-gray-600 mb-4">Event: {{ cart_item.decoration.name }}</p>
+        <p class="text-xl text-gray-600 mb-4">Total Amount: ₹{{ amount }}</p>
+        <button id="pay-button" class="bg-indigo-600 hover:bg-indigo-800 text-white py-2 px-4 rounded-md">
+            Pay Now
+        </button>
+    </div>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+
+
+    <script>
+        const payButton = document.getElementById('pay-button');
+        payButton.onclick = function(e) {
+            e.preventDefault();
+            var options = {
+                "key": "{{ razorpay_key }}",
+                "amount": "{{ amount|floatformat:0 }}00",
+                "currency": "INR",
+                "name": "{{ cart_item.decoration.name }}",
+                "description": "Decoration Booking",
+                "order_id": "{{ order_id }}",
+                "handler": function (response){
+                    alert("Payment Successful!");
+                    window.location.href = "{% url 'decoration_payment_success' cart_item.id %}";
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+</html>
