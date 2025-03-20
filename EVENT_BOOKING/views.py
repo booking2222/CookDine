@@ -1485,7 +1485,8 @@ def payment_success(request, order_id, payment_id):
             payment_record = Paymentd.objects.get(payment_id=order_id)
             payment_record.status = 'refund'  # Set status to Completed
             payment_record.save()
-            return JsonResponse({'message': 'Payment successful!'})
+            alert = "<script>alert('Payment Successful!');window.location.href='/Ownerhome/';</script>"
+            return HttpResponse(alert)
         else:
             return JsonResponse({'error': 'Payment failed!'}, status=400)
 
